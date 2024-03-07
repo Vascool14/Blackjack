@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import dealer from './assets/dealer.png'
-import allCards from './Card.jsx'
+import allCards from './Card'
 import coin from './assets/coin.svg'
 import backOfCard from './assets/backOfCard.png'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
@@ -11,11 +11,12 @@ const getRandomCard = () => {
   const suits = [ 'c', 'd', 'h', 's'] 
   return values[Math.round(Math.random() * 12)] + suits[Math.round(Math.random() * 3)];
 }
-const getCardPoints = (index) => {
+const getCardPoints = (index: string) => {
   const points = { '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, 'T':10, 'J':10, 'Q':10, 'K':10, 'A':11 }; 
+  // @ts-ignore
   return points[String(index).slice(0, 1)];
 }
-const Points = ( array ) =>{
+const Points = ( array: string[] ) => {
   let points = 0;
   for (let i = 0; i < array.length; ++i) {
     points += getCardPoints(array[i])
@@ -26,11 +27,11 @@ const Points = ( array ) =>{
 function App() {
   const [ message, setMessage ] = useState('I will be your dealer today! Good luck!'); 
   useEffect(() => {
-    const msg = document.getElementById('msg');
+    const msg = document.getElementById('msg') as HTMLDivElement;
     msg.classList.remove('hidden');
-    setTimeout(() => {      msg.classList.add('hidden');     }, 3500);
+    setTimeout(() => { msg.classList.add('hidden');}, 3500);
   }, [message]);
-  const [parent, enableAnimations] = useAutoAnimate({ duration: 300, easing: 'ease-out' });
+  const [parent] = useAutoAnimate({ duration: 300, easing: 'ease-out' });
   
   const [ cards, setCards ] = useState([getRandomCard(), getRandomCard()]);
   const [ dealerCards, setDealerCards ] = useState([getRandomCard(), getRandomCard()]);
@@ -153,7 +154,7 @@ function App() {
         {/* DEALER'S CARDS */}
           {stand && <h1 className='absolute top-[57%] left-[38%] drop-shadow-2xl text-2xl font-semibold text-slate-200 text-center mt-20'>{dealerPoints} points</h1>}
           <div ref={parent} id="dealerCards" className='absolute flex flex-row'>
-            {dealerCards.map((index, key) => {
+            {dealerCards.map((index: string, key: number) => {
               return <img  key={key} src={key == 0 && cardHidden ? backOfCard :allCards[index]} alt='card' 
               className='w-14 lg:w-18 -ml-6 rounded'/>
            })}
